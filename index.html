@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Vulnerable Voxel Prediction and Monitoring for Semantic Map Integrity under Camera–LiDAR Misalignment</title>
+<meta name="description" content="Anonymous project page: a training-free, label-free map-integrity monitor that detects camera–LiDAR misalignment damage from the semantic map itself.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#1a1a1a;
+    --body:#3d4248;
+    --dim:#6b7078;
+    --rule:#e2e4e0;
+    --plate:#ffffff;
+    --accent:#1f3fa8;        /* title + section headings */
+    --monitored:#d10fc8;     /* Top-1% monitored set (magenta in figures) */
+    --protected:#ec8a12;     /* Top-20% protected set (orange in figures) */
+    --corrupt:#c8202a;       /* corrupted labels (red in figures) */
+    --sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+    --cond:"IBM Plex Sans Condensed","Helvetica Neue",Arial,sans-serif;
+    --page:62rem;
+    --prose:48rem;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--body);
+    font-family:var(--sans);font-size:17px;line-height:1.6;
+    text-rendering:optimizeLegibility;
+  }
+
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,63,168,.3)}
+  a:hover{border-bottom-color:var(--accent)}
+  a:focus-visible,video:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+  .page{max-width:var(--page);margin:0 auto;padding:0 1.5rem}
+  .prose{max-width:var(--prose);margin:0 auto}
+
+  /* ---------- header ---------- */
+  header{padding:3.5rem 0 0;text-align:center}
+  h1{
+    font-weight:600;color:var(--accent);
+    font-size:clamp(1.5rem,3.1vw,2.15rem);line-height:1.28;
+    letter-spacing:-.01em;margin:0 auto 1.4rem;max-width:52rem;
+    text-wrap:balance;
+  }
+  .byline{font-size:1.02rem;color:var(--ink);margin:0 0 .2rem}
+  .review-note{font-size:.94rem;color:var(--dim);margin:0 0 1.6rem}
+
+  .links{display:flex;justify-content:center;flex-wrap:wrap;gap:.55rem;margin:0 0 2.6rem}
+  .links a{
+    background:#2b2f36;color:#fff;border:0;border-radius:999px;
+    padding:.5rem 1.25rem;font-size:.95rem;font-weight:500;
+  }
+  .links a:hover{background:#14171b}
+
+  /* ---------- sections ---------- */
+  section{padding:3.2rem 0 0}
+  h2{
+    text-align:center;color:var(--accent);font-weight:600;
+    font-size:1.5rem;line-height:1.25;margin:0 0 1.4rem;
+  }
+  p{margin:0 0 1rem}
+  .prose p:last-child{margin-bottom:0}
+
+  /* ---------- figures ---------- */
+  figure{margin:1.7rem 0 0}
+  .plate{background:var(--plate);border:1px solid var(--rule);border-radius:4px;padding:.7rem}
+  .plate img{display:block;width:100%;height:auto}
+  figcaption{
+    font-family:var(--cond);font-size:.89rem;line-height:1.5;color:var(--dim);
+    margin:.7rem auto 0;max-width:var(--prose);text-align:center;
+  }
+  figcaption b{color:var(--ink);font-weight:600}
+
+  .key{
+    display:flex;justify-content:center;flex-wrap:wrap;gap:1.1rem;align-items:center;
+    font-family:var(--cond);font-size:.88rem;color:var(--dim);margin-top:.9rem;
+  }
+  .key span{display:inline-flex;align-items:center;gap:.4rem}
+  .swatch{width:.7rem;height:.7rem;border-radius:1px;display:inline-block}
+  .swatch.mon{background:var(--monitored)}
+  .swatch.pro{background:var(--protected)}
+  .swatch.cor{background:transparent;border:2px solid var(--corrupt);border-radius:50%}
+
+  /* ---------- video ---------- */
+  .video-wrap{background:#0e1013;border-radius:4px;padding:.6rem}
+  .video-wrap video{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:2px;background:#0e1013}
+
+  /* ---------- tables ---------- */
+  .scroller{overflow-x:auto;margin:1.7rem 0 0;border:1px solid var(--rule);border-radius:4px}
+  table{border-collapse:collapse;width:100%;font-family:var(--cond);font-size:.92rem;font-variant-numeric:tabular-nums}
+  caption{
+    caption-side:top;text-align:left;font-family:var(--cond);font-size:.88rem;line-height:1.5;
+    color:var(--dim);padding:.75rem .9rem;border-bottom:1px solid var(--rule);
+  }
+  caption b{color:var(--ink);font-weight:600}
+  th,td{padding:.42rem .75rem;text-align:right;white-space:nowrap;border-bottom:1px solid #eef0ec}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--ink);font-weight:600;background:#f7f8f6;border-bottom:1px solid var(--rule)}
+  tbody tr:last-child td{border-bottom:0}
+  td.ds{color:var(--ink);font-weight:500;vertical-align:top;border-right:1px solid #eef0ec;background:var(--bg)!important;text-align:left}
+  td.name,th.name{text-align:left}
+  tr.grp-end td{border-bottom:1px solid var(--rule)}
+  tr.sub td{background:#f7f8f6;color:var(--ink);font-style:italic;text-align:left}
+  tr.ours td{background:#fdf0fc}
+  tr.ours td.name{box-shadow:inset 3px 0 0 var(--monitored);font-weight:600;color:var(--ink)}
+  .best{font-weight:600;color:var(--ink)}
+  table.redrive th,table.redrive td{text-align:center}
+  table.redrive th:first-child,table.redrive td:first-child{text-align:left}
+  table.redrive th.grp{border-left:1px solid #eef0ec;border-bottom:1px solid #eef0ec}
+  table.redrive .sep{border-left:1px solid #eef0ec}
+  .ok{color:var(--monitored);font-weight:600}
+  .miss{color:#a8adb2}
+  .tnote{font-family:var(--cond);font-size:.85rem;color:var(--dim);margin:.7rem auto 0;max-width:var(--prose)}
+
+  /* ---------- code / bibtex ---------- */
+  pre{
+    background:#f6f7f5;border:1px solid var(--rule);border-radius:4px;
+    padding:.9rem 1rem;overflow-x:auto;max-width:var(--prose);margin:1.2rem auto 0;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.85rem;line-height:1.55;color:var(--body);
+  }
+
+  footer{
+    margin-top:4.5rem;padding:1.6rem 0 3.5rem;border-top:1px solid var(--rule);
+    font-family:var(--cond);font-size:.87rem;color:var(--dim);text-align:center;
+  }
+  footer p{margin:0 0 .5rem}
+
+  @media (max-width:640px){
+    body{font-size:16px}
+    header{padding-top:2.5rem}
+  }
+  @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+  [id]{scroll-margin-top:1.5rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="page">
+    <h1>Vulnerable Voxel Prediction and Monitoring for Semantic Map Integrity under Camera–LiDAR Misalignment</h1>
+    <p class="byline">Anonymous Submission</p>
+    <p class="review-note">Paper under double-anonymous review</p>
+    <p class="links">
+      <a href="assets/paper.pdf">Paper</a>
+      <a href="#video">Video</a>
+      <a href="#code">Code</a>
+      <a href="#bibtex">BibTeX</a>
+    </p>
+
+    <figure style="margin-top:0">
+      <div class="plate"><img src="assets/fig1_teaser.png" alt="Left: a calibrated and a mis-calibrated camera–LiDAR projection and the resulting semantic maps, with label errors circled in red. Right: the three-stage monitor — PME ranking once per route, a map-entropy gate that alarms on every repeat, and a calibration check that holds writes of the Top-20% PME voxels."></div>
+      <figcaption><b>Map-integrity monitor for a repeated route.</b> (a) Miscalibration corrupts the accumulated map (red circles). (b) PME fixes the monitored set (Top-1%) once per route (1), a gate on its map entropy raises an alarm (2), and the robot then checks the calibration or synchronization and holds the writes of the protected set (Top-20%) until the check (3).</figcaption>
+      <div class="key">
+        <span><i class="swatch mon"></i>Monitored set (Top-1% PME)</span>
+        <span><i class="swatch pro"></i>Protected set (Top-20% PME)</span>
+        <span><i class="swatch cor"></i>Label errors from misalignment</span>
+      </div>
+    </figure>
+  </div>
+</header>
+
+<main>
+
+<section id="abstract">
+  <div class="page">
+    <h2>Abstract</h2>
+    <div class="prose">
+      <p>Camera–LiDAR semantic mapping writes every label through the extrinsic calibration, so drift or a time offset silently corrupts the map. Online calibrators and calibration monitors judge only the sensor pair, not the map, and a constant-extrinsic calibrator cannot remove a time offset. We observe that misalignment concentrates label errors in a few voxels whose projections cross label changes, which map-wide statistics dilute. For robots that repeat a route, such as patrol and inspection robots, we turn this observation into a training-free monitor that supervises rather than replaces calibration. A projection-marginalized entropy ranks vulnerable voxels from one clean pass of the route. A label-free gate on the map entropy of a small monitored set decides when to check the calibration, and the mapper holds the updates of a wider protected set until then. On urban and off-road data, including next-day re-drives, the gate detects 91% of the runs that lose over 5% mIoU, including runs a calibration monitor deems valid, almost never alarms without an offset, and flags a real image–scan pairing fault (a 137&nbsp;ms time offset). Holding the protected set avoids 53–60% of the corruption.</p>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="page">
+    <h2>Supplementary Video</h2>
+    <div class="video-wrap">
+      <video controls preload="metadata" playsinline poster="assets/demo_poster.jpg">
+        <source src="assets/demo.mp4" type="video/mp4">
+        Your browser cannot play this video. <a href="assets/demo.mp4">Download the MP4</a>.
+      </video>
+    </div>
+    <figcaption>Each sequence is replayed twice from the same frames, once with a fixed 1&deg; extrinsic offset and once with the nominal extrinsic, on RELLIS-3D, KITTI-360 and an off-road route, including a next-day re-drive with a frozen monitored set.</figcaption>
+  </div>
+</section>
+
+<section id="method">
+  <div class="page">
+    <h2>Method Overview</h2>
+
+    <figure style="margin-top:0">
+      <div class="plate"><img src="assets/fig2_pipeline.png" alt="Pipeline. Offline: RGB, segmentation and a softmax cache feed Monte Carlo projection lookups; PME ranks voxels, the Top-1% IDs are frozen, and a baseline is fit on an offset-free replay. Online: each frame is segmented, projected and mapped; the gate monitors the map entropy of the frozen voxels, raises a drift alarm, and holds writes of the Top-20% PME voxels until recalibration."></div>
+      <figcaption><b>Map-integrity monitor pipeline.</b> Offline, projection-marginalized predictive entropy (PME) ranks voxels by Monte Carlo projection lookups on one clean commissioning traversal and freezes the Top-1% set together with the baseline of its map entropy. Online, the gate compares the current map entropy of that set with the baseline, and an alarm holds the writes of the protected set (Top-20% PME voxels) until a calibration or synchronization check. The gate estimates no extrinsic and needs no labels or training.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="results">
+  <div class="page">
+    <h2>Results</h2>
+
+    <div class="scroller">
+      <table class="rank">
+        <caption><b>Which voxels a misalignment damages.</b> Backend-independent voxel damage ranking against &sigma;=4&deg; rebuilds; a voxel is positive if it falls in the upper 10% of the relabeling rate. P@1 is the Top-1% precision. All-matched random controls boundary, depth, eccentricity, density and class.</caption>
+        <thead>
+          <tr><th>Dataset</th><th class="name">Score</th><th>Voxel AUROC &uarr;</th><th>AUPRC &uarr;</th><th>Spearman &uarr;</th><th>P@1 &uarr;</th></tr>
+        </thead>
+        <tbody>
+          <tr class="ours"><td class="ds" rowspan="4">RELLIS-3D</td><td class="name">PME (ours)</td><td class="best">0.793</td><td>0.489</td><td>0.526</td><td>0.637</td></tr>
+          <tr><td class="name">JS<sup>proj</sup></td><td>0.791</td><td class="best">0.501</td><td class="best">0.531</td><td class="best">0.775</td></tr>
+          <tr><td class="name">Seg-Entropy</td><td>0.706</td><td>0.391</td><td>0.350</td><td>0.543</td></tr>
+          <tr class="grp-end"><td class="name">All-matched random</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0.566</td></tr>
+
+          <tr class="ours"><td class="ds" rowspan="4">KITTI-360</td><td class="name">PME (ours)</td><td class="best">0.755</td><td class="best">0.600</td><td class="best">0.420</td><td class="best">0.810</td></tr>
+          <tr><td class="name">JS<sup>proj</sup></td><td>0.736</td><td>0.556</td><td>0.390</td><td>0.699</td></tr>
+          <tr><td class="name">Seg-Entropy</td><td>0.725</td><td>0.562</td><td>0.372</td><td>0.729</td></tr>
+          <tr class="grp-end"><td class="name">All-matched random</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0.717</td></tr>
+
+          <tr class="ours"><td class="ds" rowspan="4">Off-road</td><td class="name">PME (ours)</td><td class="best">0.908</td><td class="best">0.577</td><td>0.566</td><td class="best">0.753</td></tr>
+          <tr><td class="name">JS<sup>proj</sup></td><td>0.879</td><td>0.410</td><td class="best">0.570</td><td>0.401</td></tr>
+          <tr><td class="name">Seg-Entropy</td><td>0.880</td><td>0.524</td><td>0.491</td><td>0.658</td></tr>
+          <tr><td class="name">All-matched random</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0.631</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <caption><b>When the gate alarms, and how much damage the hold avoids.</b> Fixed-offset runs binned by the final-map mIoU loss (%). First alarm is in % of the run; Prevented is the share of new label errors avoided by holding the protected set from the first alarm. The lower block compares calibration monitors on the same RELLIS-3D and KITTI-360 runs.</caption>
+        <thead>
+          <tr><th>mIoU loss (%)</th><th>Clean</th><th>&lt;2</th><th>2&ndash;5</th><th>5&ndash;10</th><th>10&ndash;20</th><th>&gt;20</th></tr>
+        </thead>
+        <tbody>
+          <tr class="sub"><td colspan="7">All runs (78 drifted, 14 offset-free)</td></tr>
+          <tr><td>Runs</td><td>14</td><td>8</td><td>13</td><td>16</td><td>20</td><td>21</td></tr>
+          <tr class="ours"><td class="name">PME gate (ours)</td><td class="best">0/14</td><td>3/8</td><td>9/13</td><td>14/16</td><td>18/20</td><td>20/21</td></tr>
+          <tr><td>First alarm (%)</td><td>&ndash;</td><td>44</td><td>49</td><td>31</td><td>29</td><td>21</td></tr>
+          <tr class="grp-end"><td>Prevented (%)</td><td>&ndash;</td><td>21</td><td>35</td><td>61</td><td>64</td><td>76</td></tr>
+
+          <tr class="sub"><td colspan="7">RELLIS-3D + KITTI-360 (same runs)</td></tr>
+          <tr><td>Runs</td><td>9</td><td>0</td><td>6</td><td>7</td><td>7</td><td>20</td></tr>
+          <tr class="ours"><td class="name">PME gate (ours)</td><td class="best">0/9</td><td>&ndash;</td><td>2/6</td><td class="best">5/7</td><td class="best">6/7</td><td class="best">19/20</td></tr>
+          <tr><td>OCAMO, z-gate</td><td>3/9</td><td>&ndash;</td><td>5/6</td><td>2/7</td><td>3/7</td><td>7/20</td></tr>
+          <tr><td>LTO, z-gate</td><td>4/9</td><td>&ndash;</td><td>5/6</td><td>5/7</td><td>4/7</td><td>12/20</td></tr>
+          <tr><td>OCAMO, own rule</td><td>0/9</td><td>&ndash;</td><td>0/6</td><td>0/7</td><td>0/7</td><td>0/20</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tnote">Clean counts alarms on offset-free replays (false alarms); the other columns count detections. At a 5% tolerance the gate alarms on 52 of the 57 runs that need recalibration (91%).</p>
+
+    <div class="scroller">
+      <table class="redrive">
+        <caption><b>Next-day re-drives with a frozen monitored set.</b> Three re-drives of an off-road route that took no part in selection, training or tuning. The monitored set is selected once on the first drive and read on each re-drive through GPS-matched registration. Route is the share (%) of the first route a re-drive covers. False alarms are counted on offset-free checks, for the PME gate and for Map diff, a plain comparison of the current map with the commissioning map. The offset columns mark whether the gate detects a fixed rotation.</caption>
+        <thead>
+          <tr>
+            <th rowspan="2">Drive</th>
+            <th rowspan="2">Route (%)</th>
+            <th class="grp" colspan="2">False alarms &darr;</th>
+            <th class="grp" colspan="5">Detected at offset</th>
+          </tr>
+          <tr>
+            <th class="sep">PME gate</th><th>Map diff</th>
+            <th class="sep">0.5&deg;</th><th>1&deg;</th><th>1.5&deg;</th><th>2&deg;</th><th>3&deg;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Re-drive A</td><td>74</td><td class="sep best">1/67</td><td>41/67</td><td class="sep miss">&ndash;</td><td class="ok">&check;</td><td class="ok">&check;</td><td class="ok">&check;</td><td class="ok">&check;</td></tr>
+          <tr><td>Re-drive B</td><td>31</td><td class="sep best">0/40</td><td>33/40</td><td class="sep miss">&ndash;</td><td class="miss">&ndash;</td><td class="miss">&ndash;</td><td class="miss">&ndash;</td><td class="ok">&check;</td></tr>
+          <tr><td>Re-drive C</td><td>14</td><td class="sep best">0/16</td><td>16/16</td><td class="sep ok">&check;</td><td class="ok">&check;</td><td class="ok">&check;</td><td class="ok">&check;</td><td class="ok">&check;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tnote">Registration error, lighting and vegetation relabel more voxels across days than the offset itself, so the plain map comparison alarms on most offset-free checks, while the gate stays almost silent and detects offsets from 1&deg; on two of the three drives.</p>
+  </div>
+</section>
+
+<section id="qualitative">
+  <div class="page">
+    <h2>Qualitative Results</h2>
+
+    <figure style="margin-top:0">
+      <div class="plate"><img src="assets/fig5_selection.png" alt="Grid of oblique map views on RELLIS-3D, KITTI-360 and off-road data: reference image, clean map, damaged map, and the Top-10% voxels selected by random, semantic-boundary, depth-discontinuity and PME scores."></div>
+      <figcaption><b>Vulnerable-voxel selection on RELLIS-3D, KITTI-360, and off-road maps.</b> The damaged map marks in red the voxels that a 4° extrinsic perturbation relabels. Magenta marks each rule's Top-10% (the monitored set is the Top-1%). Random, semantic-boundary and depth-discontinuity scores select many cells far from the damage, whereas PME concentrates where the damage occurs.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="code">
+  <div class="page">
+    <h2>Code</h2>
+    <div class="prose">
+      <p>The source code will be released publicly upon acceptance.</p>
+    </div>
+  </div>
+</section>
+
+<section id="bibtex">
+  <div class="page">
+    <h2>BibTeX</h2>
+<pre>% Citation withheld during double-anonymous review.
+% The BibTeX entry will be added in the camera-ready version.</pre>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="page">
+    <p>Anonymous submission. Author, institution and dataset-provider identifying information has been removed for double-anonymous review.</p>
+    <p>Figures and tables on this page are taken from the submitted manuscript.</p>
+  </div>
+</footer>
+
+</body>
+</html>
